@@ -6,12 +6,10 @@ int main()
 	std::string video_path = "TEST_01.mp4";
 	std::string output_path = "A_TEST_01.mp4";
 
-	auto* rvm = new RobustVideoMatting(onnx_path, 12); // 12 threads
+	RobustVideoMatting rvm(onnx_path, 12); // 12 threads
 	std::vector<MattingContent> contents;
 
-	rvm->detect_video(video_path, output_path, contents, cv::Size(960, 540), false, 0.25, 0);
-
-	delete rvm;
+	rvm.detect_video(video_path, output_path, contents, cv::Size(960, 540), 0.25, false, 0);
 
 	//in
 	// onnx path -> dev mode only

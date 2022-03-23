@@ -58,7 +58,6 @@ class  RobustVideoMatting {
 	};
 	const wchar_t* onnx_path = nullptr;
 	const char* log_id = nullptr;
-	bool context_is_update = false;
 
 	// input values handler & init
 	std::vector<float> dynamic_src_value_handler;
@@ -102,6 +101,9 @@ public:
 	 * @param video_mode: false by default.
 	 * See https://github.com/PeterL1n/RobustVideoMatting/blob/master/documentation/inference_zh_Hans.md
 	 */
+	
+	bool context_is_update = false;
+
 	void detect(const cv::Mat& mat, MattingContent& content,
 		float downsample_ratio = 0.25f, bool video_mode = false);
 	/**
