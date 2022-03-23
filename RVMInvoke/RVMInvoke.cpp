@@ -235,8 +235,10 @@ void RobustVideoMatting::detect_video(const std::string& video_path,
 	const unsigned int width = video_capture.get(cv::CAP_PROP_FRAME_WIDTH);
 	const unsigned int height = video_capture.get(cv::CAP_PROP_FRAME_HEIGHT);
 	const unsigned int frame_count = video_capture.get(cv::CAP_PROP_FRAME_COUNT);
-	if (writer_fps == 0)
+	if (writer_fps == 0)// not setting fps, we consider it as the input video fps
+	{
 		writer_fps = video_capture.get(cv::CAP_PROP_FPS);
+	}
 	if (!video_capture.isOpened())
 	{
 		std::cout << "Can not open video: " << video_path << "\n";
@@ -317,9 +319,9 @@ void RobustVideoMatting::detect_video(const std::string& video_path,
 		auto t2 = std::chrono::time_point_cast<std::chrono::milliseconds>(ct2).time_since_epoch()
 			.count();
 		std::cout << "time consume is : " << t2 - t1 << "\n";
-#ifdef LITEORT_DEBUG
+
 		std::cout << i << "/" << frame_count << " done!" << "\n";
-#endif
+
 	}
 
 	// 5. release
@@ -366,6 +368,7 @@ void RobustVideoMatting::generate_matting(std::vector<Ort::Value>& output_tensor
 	content.fgr_mat.convertTo(content.fgr_mat, CV_8UC3);
 	content.merge_mat.convertTo(content.merge_mat, CV_8UC3);
 
+	// convert into 0-255 mat
 	pmat *= 255.;
 	content.pha_mat.convertTo(content.pha_mat, CV_8UC3);
 
