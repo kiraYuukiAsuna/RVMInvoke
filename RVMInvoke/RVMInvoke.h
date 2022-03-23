@@ -116,9 +116,8 @@ public:
 	 */
 	void detect_video(const std::string& video_path,
 		const std::string& output_path,
-		std::vector<MattingContent>& contents,
+		std::vector<MattingContent>& contents, cv::Size NetInputImgSize, float downsample_ratio = 0.25f,
 		bool save_contents = false,
-		float downsample_ratio = 0.25f,
 		unsigned int writer_fps = 0);
 
 };

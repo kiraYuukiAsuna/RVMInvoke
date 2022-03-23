@@ -226,8 +226,8 @@ void RobustVideoMatting::detect(const cv::Mat& mat, MattingContent& content,
 
 void RobustVideoMatting::detect_video(const std::string& video_path,
 	const std::string& output_path,
-	std::vector<MattingContent>& contents,
-	bool save_contents, float downsample_ratio,
+	std::vector<MattingContent>& contents, cv::Size NetInputImgSize, float downsample_ratio,
+	bool save_contents,
 	unsigned int writer_fps)
 {
 	// 0. init video capture
@@ -265,7 +265,7 @@ void RobustVideoMatting::detect_video(const std::string& video_path,
 		i += 1;
 
 		cv::Mat resizedImg;
-		cv::resize(mat, resizedImg, cv::Size(960, 540));
+		cv::resize(mat, resizedImg, NetInputImgSize);
 
 		MattingContent content;
 		this->detect(resizedImg, content, downsample_ratio, true); // video_mode true

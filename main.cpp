@@ -9,32 +9,29 @@ int main()
 	auto* rvm = new RobustVideoMatting(onnx_path, 12); // 12 threads
 	std::vector<MattingContent> contents;
 
-	// 1. video matting.
-	rvm->detect_video(video_path, output_path, contents, false, 0.25);
+	rvm->detect_video(video_path, output_path, contents, cv::Size(960, 540), false, 0.25, 0);
 
 	delete rvm;
 
 	//in
-	// onnx path
-	// thread num
+	// onnx path -> dev mode only
+	// thread num -> dev mode only
 
 	// in
-	// video path
-	// output path
-	// content
-	// save content
-	// downsample ratio
-	// write fps
+	// video path -> ok
+	// output path -> ok
+	// content -> dev mode only
+	// save content -> dev mode only
+	// downsample ratio -> user mode
+	// write fps -> user mode
+	// input net img size -> user mode
 
 	//in
-	// img mat
-	// content
-	// downsample ratio
-	// video mode
-
-
-
-
+	// img mat -> ok
+	// content -> dev mode only
+	// downsample ratio -> user mode
+	// video mode -> user mode
+	// input net img size -> user mode
 
 	return 0;
 }
