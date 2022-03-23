@@ -88,11 +88,14 @@ private:
 	int64_t value_size_of(const std::vector<int64_t>& dims); // get value size
 
 	void generate_matting(std::vector<Ort::Value>& output_tensors,
-		MattingContent& content);
+		MattingContent& content, cv::Scalar backgroundColor);
 
 	void update_context(std::vector<Ort::Value>& output_tensors);
 
 public:
+
+	bool context_is_update = false;
+
 	/**
 	 * Image Matting Using RVM(https://github.com/PeterL1n/RobustVideoMatting)
 	 * @param mat: cv::Mat BGR HWC
@@ -101,11 +104,8 @@ public:
 	 * @param video_mode: false by default.
 	 * See https://github.com/PeterL1n/RobustVideoMatting/blob/master/documentation/inference_zh_Hans.md
 	 */
-	
-	bool context_is_update = false;
-
 	void detect(const cv::Mat& mat, MattingContent& content,
-		float downsample_ratio = 0.25f, bool video_mode = false);
+		float downsample_ratio = 0.25f, cv::Scalar backgroundColor = { 153.,255. ,120. }, bool video_mode = false);
 	/**
 	 * Video Matting Using RVM(https://github.com/PeterL1n/RobustVideoMatting)
 	 * @param video_path: eg. xxx/xxx/input.mp4
@@ -118,7 +118,7 @@ public:
 	 */
 	void detect_video(const std::string& video_path,
 		const std::string& output_path,
-		std::vector<MattingContent>& contents, cv::Size NetInputImgSize, float downsample_ratio = 0.25f,
+		std::vector<MattingContent>& contents, cv::Size NetInputImgSize, float downsample_ratio = 0.25f, cv::Scalar backgroundColor = { 153.,255. ,120. },
 		bool save_contents = false,
 		unsigned int writer_fps = 0);
 

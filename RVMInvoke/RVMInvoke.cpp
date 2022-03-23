@@ -192,7 +192,7 @@ std::vector<Ort::Value> RobustVideoMatting::transform(const cv::Mat& mat)
 }
 
 void RobustVideoMatting::detect(const cv::Mat& mat, MattingContent& content,
-	float downsample_ratio, bool video_mode)
+	float downsample_ratio, cv::Scalar backgroundColor, bool video_mode)
 {
 	if (mat.empty()) return;
 	// 0. set dsr at runtime.
@@ -213,7 +213,7 @@ void RobustVideoMatting::detect(const cv::Mat& mat, MattingContent& content,
 		std::cerr << e.what();
 	}
 	// 3. generate matting
-	this->generate_matting(output_tensors, content);
+	this->generate_matting(output_tensors, content, backgroundColor);
 	// 4. update context (needed for video detection.)
 	if (video_mode)
 	{
@@ -226,7 +226,7 @@ void RobustVideoMatting::detect(const cv::Mat& mat, MattingContent& content,
 
 void RobustVideoMatting::detect_video(const std::string& video_path,
 	const std::string& output_path,
-	std::vector<MattingContent>& contents, cv::Size NetInputImgSize, float downsample_ratio,
+	std::vector<MattingContent>& contents, cv::Size NetInputImgSize, float downsample_ratio, cv::Scalar backgroundColor,
 	bool save_contents,
 	unsigned int writer_fps)
 {
@@ -268,7 +268,7 @@ void RobustVideoMatting::detect_video(const std::string& video_path,
 		cv::resize(mat, resizedImg, NetInputImgSize);
 
 		MattingContent content;
-		this->detect(resizedImg, content, downsample_ratio, true); // video_mode true
+		this->detect(resizedImg, content, downsample_ratio, backgroundColor, true); // video_mode true
 
 		bool in = false;
 		if (in) {
@@ -331,7 +331,7 @@ void RobustVideoMatting::detect_video(const std::string& video_path,
 }
 
 void RobustVideoMatting::generate_matting(std::vector<Ort::Value>& output_tensors,
-	MattingContent& content)
+	MattingContent& content, cv::Scalar backgroundColor)
 {
 	Ort::Value& fgr = output_tensors.at(0); // fgr (1,3,h,w) 0.~1.
 	Ort::Value& pha = output_tensors.at(1); // pha (1,1,h,w) 0.~1.
@@ -351,9 +351,9 @@ void RobustVideoMatting::generate_matting(std::vector<Ort::Value>& output_tensor
 	bmat *= 255.;
 	gmat *= 255.;
 	cv::Mat rest = 1. - pmat;
-	cv::Mat mbmat = bmat.mul(pmat) + rest * 153.;
-	cv::Mat mgmat = gmat.mul(pmat) + rest * 255.;
-	cv::Mat mrmat = rmat.mul(pmat) + rest * 120.;
+	cv::Mat mbmat = bmat.mul(pmat) + rest * backgroundColor.val[0];
+	cv::Mat mgmat = gmat.mul(pmat) + rest * backgroundColor.val[1];
+	cv::Mat mrmat = rmat.mul(pmat) + rest * backgroundColor.val[2];
 	std::vector<cv::Mat> fgr_channel_mats, merge_channel_mats;
 	fgr_channel_mats.push_back(bmat);
 	fgr_channel_mats.push_back(gmat);
